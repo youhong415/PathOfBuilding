@@ -1,6 +1,43 @@
 # Path of Building Community
 ## Welcome to Path of Building, an offline build planner for Path of Exile!
 
+---
+
+## 🤖 AI Summary Extractor (AI 摘要萃取工具)
+
+本專案內含強大的 AI 摘要萃取腳本 (`AI_Scripts/SummaryGenerator.lua`)，專門用來將 Path of Building 中匯出的角色 XML 檔轉換成人類與 AI 都能輕鬆閱讀的純文字格式。有了這份文字檔，您就能完美對接諸如 Gemini 的大型語言模型，進行深度的流派健檢與優化！
+
+### 如何安裝執行環境 (Windows 必備)
+由於我們的萃取工具直接調用了 PoB 內部的無頭運算引擎 (Headless Mode)，因此**必須依賴 LuaJIT** 才能順利執行。您可以利用微軟推薦的 `scoop` 工具來一鍵安裝。
+
+請開啟您的 PowerShell 終端機並依序執行以下指令：
+```powershell
+# 1. 允許執行外部腳本
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+
+# 2. 安裝 Scoop (若您的電腦尚未安裝過)
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+# 3. 透過 Scoop 一鍵安裝 LuaJIT
+scoop install luajit
+```
+
+### 如何產出角色文字摘要
+當 `luajit` 安裝完畢後，請將您的角色 XML 設定檔放入 `Builds\` 資料夾中，並依照以下步驟執行：
+
+1. 開啟一個**全新**的終端機視窗 (PowerShell / cmd 皆可)，確保新的 `luajit` 變數已生效。
+2. 執行以下兩行指令：
+```powershell
+# 第一步：一定要將路徑切換至 src/ 資料夾內，如此一來腳本才能正確吃到 PoB 的所有核心依賴
+cd src
+
+# 第二步：使用 luajit 執行萃取腳本，後方空一格加上您的流派檔案名稱 (不需要加 .xml 後綴)
+~\scoop\shims\luajit.exe ..\AI_Scripts\SummaryGenerator.lua AMa_PoisonSRS
+```
+執行成功後，您的文字摘要就會自動產出並存放在 `Builds/AMa_PoisonSRS_Summary.txt`！
+
+---
+
 <p float="middle">
   <img alt="Tree tab" src="https://github.com/user-attachments/assets/0826b7ab-84ba-440f-be52-2f216f13e75c" width="48%" />
   <img alt="Items tab" src="https://github.com/user-attachments/assets/e5af1326-7e22-43d8-ab12-aa5500da611a" width="48%" />
