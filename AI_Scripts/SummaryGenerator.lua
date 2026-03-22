@@ -25,11 +25,15 @@ end
 -- Mock missing functions from HeadlessWrapper
 function GetVirtualScreenSize() return 1920, 1080 end
 
--- 2. Load the Headless Wrapper
+-- 2. Extract arguments before they are overwritten by Launch.lua via HeadlessWrapper
+local buildName = arg[1] or "AMa_PoisonSRS"
+-- Remove .xml extension if the user includes it in the argument
+buildName = buildName:gsub("%.[xX][mM][lL]$", "")
+
+-- Load the Headless Wrapper
 dofile("HeadlessWrapper.lua")
 
 -- 3. Read the XML file
-local buildName = arg[1] or "AMa_PoisonSRS"
 local xmlPath = "../Builds/" .. buildName .. ".xml"
 local xmlFile = io.open(xmlPath, "r")
 if not xmlFile then
