@@ -69,6 +69,29 @@ if out then
     
     local dps = out.TotalDPS or out.CombinedDPS or out.MinionTotalDPS or 0
     summary = summary .. "Main Skill DPS: " .. tostring(dps) .. "\n"
+    
+    summary = summary .. "\n[Defense Statistics]\n"
+    summary = summary .. "Effective Hit Pool (EHP): " .. tostring(out.EffectiveHitPool or 0) .. "\n"
+    summary = summary .. "Fire Res: " .. tostring(out.FireResist or 0) .. "% (Uncapped: " .. tostring(out.FireResistTotal or 0) .. "%) | "
+    summary = summary .. "Cold Res: " .. tostring(out.ColdResist or 0) .. "% (Uncapped: " .. tostring(out.ColdResistTotal or 0) .. "%) | "
+    summary = summary .. "Light Res: " .. tostring(out.LightningResist or 0) .. "% (Uncapped: " .. tostring(out.LightningResistTotal or 0) .. "%) | "
+    summary = summary .. "Chaos Res: " .. tostring(out.ChaosResist or 0) .. "% (Uncapped: " .. tostring(out.ChaosResistTotal or 0) .. "%)\n"
+    summary = summary .. "Phys Damage Reduction: " .. tostring(out.PhysicalDamageReduction or 0) .. "%\n"
+    summary = summary .. "Block Chance: " .. tostring(out.BlockChance or 0) .. "% | Spell Block: " .. tostring(out.SpellBlockChance or 0) .. "%\n"
+    summary = summary .. "Spell Suppression: " .. tostring(out.SpellSuppressionChance or 0) .. "%\n"
+    summary = summary .. "Evade Chance: " .. tostring(out.EvadeChance or 0) .. "%\n"
+    
+    summary = summary .. "\n[Offense & Misc Statistics]\n"
+    summary = summary .. "Hit Chance: " .. tostring(out.HitChance or 0) .. "%\n"
+    summary = summary .. "Crit Chance: " .. tostring(out.CritChance or 0) .. "% | Crit Multi: " .. tostring(out.CritMultiplier or 0) .. "\n"
+    summary = summary .. "Life Regen: " .. tostring(out.LifeRegen or 0) .. " | Mana Regen: " .. tostring(out.ManaRegen or 0) .. "\n"
+    summary = summary .. "Max Leech Rate: " .. tostring(out.MaxLifeLeechRate or 0) .. " (" .. tostring(out.MaxLifeLeechRatePercent or 0) .. "%)\n"
+    summary = summary .. "Speed: " .. tostring(out.Speed or 0) .. "\n"
+    
+    summary = summary .. "\n[Charges]\n"
+    summary = summary .. "Endurance Charges: " .. tostring(out.EnduranceCharges or 0) .. " / " .. tostring(out.EnduranceChargesMax or 0) .. "\n"
+    summary = summary .. "Frenzy Charges: " .. tostring(out.FrenzyCharges or 0) .. " / " .. tostring(out.FrenzyChargesMax or 0) .. "\n"
+    summary = summary .. "Power Charges: " .. tostring(out.PowerCharges or 0) .. " / " .. tostring(out.PowerChargesMax or 0) .. "\n"
 else
     summary = summary .. "Failed to calculate stats.\n"
 end
@@ -107,14 +130,19 @@ for slotName, slot in pairs(build.itemsTab.slots) do
 end
 
 summary = summary .. "\n[Allocated Passive Nodes]\n"
-local passives = {}
+local passiveCount = 0
 for id, node in pairs(build.spec.allocNodes) do
     if node.type ~= "ClassStart" and node.type ~= "AscendClassStart" and node.name then
-        table.insert(passives, node.name)
+        passiveCount = passiveCount + 1
+        summary = summary .. "- " .. node.name .. "\n"
+        if node.sd then
+            for _, line in ipairs(node.sd) do
+                summary = summary .. "   >>> " .. line .. "\n"
+            end
+        end
     end
 end
-summary = summary .. "Total Passives Allocated: " .. #passives .. "\n"
-summary = summary .. table.concat(passives, ", ") .. "\n"
+summary = summary .. "\nTotal Passives Allocated: " .. passiveCount .. "\n"
 
 -- 7. Write to Output File
 local outPath = "../Builds/" .. buildName .. "_Summary.txt"
